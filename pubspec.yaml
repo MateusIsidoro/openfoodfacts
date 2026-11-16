@@ -9,8 +9,8 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  cupertino_icons: ^1.0.8
-  openfoodfacts: 3.30.2
+  cupertino_icons: ^2.0.0
+  openfoodfacts: ^3.32.0
 
 dev_dependencies:
   flutter_test:

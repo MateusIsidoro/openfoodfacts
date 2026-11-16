@@ -8,6 +8,8 @@ class CartaoProduto extends StatelessWidget {
   final VoidCallback aoClicar;
   final VoidCallback aoAlternarFavorito;
   final bool ehFavorito;
+  final bool estaNoComparador;
+  final VoidCallback? aoAlternarComparador;
 
   const CartaoProduto({
     super.key,
@@ -15,6 +17,8 @@ class CartaoProduto extends StatelessWidget {
     required this.aoClicar,
     required this.aoAlternarFavorito,
     required this.ehFavorito,
+    this.estaNoComparador = false,
+    this.aoAlternarComparador,
   });
 
   @override
@@ -111,6 +115,15 @@ class CartaoProduto extends StatelessWidget {
                 onPressed: aoAlternarFavorito,
                 tooltip: ehFavorito ? 'Remover dos favoritos' : 'Adicionar aos favoritos',
               ),
+              if (aoAlternarComparador != null)
+                IconButton(
+                  icon: Icon(
+                    estaNoComparador ? Icons.compare_arrows : Icons.add_chart,
+                    color: estaNoComparador ? Colors.blue : Colors.grey,
+                  ),
+                  onPressed: aoAlternarComparador,
+                  tooltip: estaNoComparador ? 'Remover do comparador' : 'Adicionar ao comparador',
+                ),
             ],
           ),
         ),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:openfoodfacts/openfoodfacts.dart';
 import '../servicos/servico_open_food_facts.dart';
 import '../widgets/cartao_produto.dart';
+import 'tela_comparador.dart';
 import 'tela_detalhes_produto.dart';
 
 class TelaPrincipal extends StatefulWidget {
@@ -15,6 +16,7 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
   final TextEditingController _controladorPesquisa = TextEditingController();
   List<Product> _listaProdutosResultados = [];
   final List<Product> _listaProdutosFavoritos = [];
+  final List<Product> _listaProdutosComparados = [];
   bool _estahCarregando = false;
   String? _mensagemErro;
   int _indiceAbaAtual = 0;
@@ -126,6 +128,53 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
     return _listaProdutosFavoritos.any((p) => p.barcode == produto.barcode);
   }
 
+  bool _verificarSeEstaNoComparador(Product produto) {
+    return _listaProdutosComparados.any((p) => p.barcode == produto.barcode);
+  }
+
+  void _alternarComparador(Product produto) {
+    setState(() {
+      final bool jaExiste = _verificarSeEstaNoComparador(produto);
+      if (jaExiste) {
+        _listaProdutosComparados.removeWhere((p) => p.barcode == produto.barcode);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('${produto.productName ?? "Produto"} removido do comparador.'),
+            duration: const Duration(seconds: 2),
+          ),
+        );
+      } else if (_listaProdutosComparados.length >= 2) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('O comparador suporta no máximo 2 produtos. Remova um antes de adicionar outro.'),
+            duration: Duration(seconds: 3),
+            backgroundColor: Colors.orange,
+          ),
+        );
+      } else {
+        _listaProdutosComparados.add(produto);
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(
+              _listaProdutosComparados.length == 2
+                  ? 'Comparador pronto! Vá para a aba Comparar.'
+                  : '${produto.productName ?? "Produto"} adicionado ao comparador. Adicione mais 1.',
+            ),
+            duration: const Duration(seconds: 3),
+            backgroundColor: Colors.green,
+            action: _listaProdutosComparados.length == 2
+                ? SnackBarAction(
+                    label: 'Comparar',
+                    textColor: Colors.white,
+                    onPressed: () => setState(() => _indiceAbaAtual = 2),
+                  )
+                : null,
+          ),
+        );
+      }
+    });
+  }
+
   void _abrirDialogoSimuladorLeitor() {
     final TextEditingController controladorCodigoCustomizado = TextEditingController();
 
@@ -204,6 +253,8 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           produto: produto,
           ehFavorito: _verificarSeEhFavorito(produto),
           aoAlternarFavorito: _alternarFavorito,
+          estaNoComparador: _verificarSeEstaNoComparador(produto),
+          aoAlternarComparador: _alternarComparador,
         ),
       ),
     ).then((_) {
@@ -338,6 +389,8 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
                           ehFavorito: _verificarSeEhFavorito(produtoAtual),
                           aoClicar: () => _abrirTelaDetalhes(produtoAtual),
                           aoAlternarFavorito: () => _alternarFavorito(produtoAtual),
+                          estaNoComparador: _verificarSeEstaNoComparador(produtoAtual),
+                          aoAlternarComparador: () => _alternarComparador(produtoAtual),
                         );
                       },
                     ),
@@ -377,6 +430,8 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           ehFavorito: true,
           aoClicar: () => _abrirTelaDetalhes(produtoFavorito),
           aoAlternarFavorito: () => _alternarFavorito(produtoFavorito),
+          estaNoComparador: _verificarSeEstaNoComparador(produtoFavorito),
+          aoAlternarComparador: () => _alternarComparador(produtoFavorito),
         );
       },
     );
@@ -415,7 +470,17 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
           ),
         ],
       ),
-      body: _indiceAbaAtual == 0 ? _construirAbaPesquisa() : _construirAbaFavoritos(),
+      body: IndexedStack(
+        index: _indiceAbaAtual,
+        children: [
+          _construirAbaPesquisa(),
+          _construirAbaFavoritos(),
+          TelaComparador(
+            produtosComparados: _listaProdutosComparados,
+            aoRemoverProduto: (produto) => _alternarComparador(produto),
+          ),
+        ],
+      ),
       bottomNavigationBar: NavigationBar(
         selectedIndex: _indiceAbaAtual,
         onDestinationSelected: (novoIndice) {
@@ -433,6 +498,11 @@ class _TelaPrincipalState extends State<TelaPrincipal> {
             icon: Icon(Icons.favorite_border),
             selectedIcon: Icon(Icons.favorite, color: Colors.red),
             label: 'Favoritos',
+          ),
+          NavigationDestination(
+            icon: Icon(Icons.compare_arrows),
+            selectedIcon: Icon(Icons.compare_arrows, color: Colors.blue),
+            label: 'Comparar',
           ),
         ],
       ),

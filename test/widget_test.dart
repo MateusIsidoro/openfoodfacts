@@ -8,6 +8,18 @@ void main() {
 
     // Verify that the title 'NutriBusca' is rendered.
     expect(find.text('NutriBusca'), findsOneWidget);
+
+    // Verify navigation tabs exist
+    expect(find.text('Pesquisar'), findsOneWidget);
+    expect(find.text('Favoritos'), findsOneWidget);
+    expect(find.text('Comparar'), findsOneWidget);
+
+    // Switch to 'Comparar' tab
+    await tester.tap(find.text('Comparar'));
+    await tester.pump();
+
+    // Verify empty state in comparator
+    expect(find.textContaining('Nenhum produto adicionado'), findsOneWidget);
   });
 }
 

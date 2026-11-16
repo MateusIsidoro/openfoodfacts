@@ -1,0 +1,85 @@
+name: CI/CD Pipeline - NutriBusca Open Food Facts
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+
+jobs:
+  # 1. Integração Contínua (CI): Qualidade, Lint e Testes
+  ci:
+    name: "CI - Análise Estática e Testes"
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+          cache: true
+
+      - name: Instalar Dependências
+        run: flutter pub get
+
+      - name: Análise Estática (Linter)
+        run: flutter analyze
+
+      - name: Executar Testes Automatizados
+        run: flutter test --coverage
+
+  # 2. Implantação Contínua (CD) - Staging (Homologação)
+  deploy-staging:
+    name: "CD - Deploy em Staging"
+    needs: ci
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: staging
+      url: https://mateusisidoro.github.io/openfoodfacts/staging
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Build Web para Staging
+        run: flutter build web --base-href "/openfoodfacts/staging/"
+
+      - name: Publicar Artefato de Staging
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-web-staging
+          path: build/web/
+
+  # 3. Implantação Contínua (CD) - Production (Produção com Revisor Obrigatório)
+  deploy-production:
+    name: "CD - Deploy em Produção"
+    needs: deploy-staging
+    if: github.ref == 'refs/heads/main' && github.event_name == 'push'
+    environment:
+      name: production
+      url: https://mateusisidoro.github.io/openfoodfacts/
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do Repositório
+        uses: actions/checkout@v4
+
+      - name: Configurar Flutter SDK
+        uses: subosito/flutter-action@v2
+        with:
+          channel: 'stable'
+
+      - name: Build Web para Produção
+        run: flutter build web --base-href "/openfoodfacts/"
+
+      - name: Publicar Artefato de Produção
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-web-production
+          path: build/web/

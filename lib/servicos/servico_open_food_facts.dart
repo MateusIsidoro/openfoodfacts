@@ -20,6 +20,7 @@ class ServicoOpenFoodFacts {
       ProductField.NUTRISCORE,
       ProductField.IMAGE_FRONT_URL,
       ProductField.IMAGE_FRONT_SMALL_URL,
+      ProductField.NUTRITION,
       ProductField.NUTRIMENTS,
       ProductField.INGREDIENTS_TEXT,
       ProductField.NOVA_GROUP,
@@ -37,7 +38,7 @@ class ServicoOpenFoodFacts {
         ],
         language: OpenFoodFactsLanguage.PORTUGUESE,
         fields: fields,
-        version: ProductQueryVersion.v3,
+        version: ProductQueryVersion.latestVersion,
       );
 
       final resultadoBusca = await OpenFoodAPIClient.searchProducts(
@@ -63,7 +64,7 @@ class ServicoOpenFoodFacts {
         ],
         language: OpenFoodFactsLanguage.PORTUGUESE,
         fields: fields,
-        version: ProductQueryVersion.v3,
+        version: ProductQueryVersion.latestVersion,
       );
 
       final resultadoCat = await OpenFoodAPIClient.searchProducts(
@@ -92,6 +93,7 @@ class ServicoOpenFoodFacts {
           ProductField.NUTRISCORE,
           ProductField.IMAGE_FRONT_URL,
           ProductField.IMAGE_FRONT_SMALL_URL,
+          ProductField.NUTRITION,
           ProductField.NUTRIMENTS,
           ProductField.INGREDIENTS_TEXT,
           ProductField.NOVA_GROUP,
@@ -99,7 +101,7 @@ class ServicoOpenFoodFacts {
           ProductField.CATEGORIES_TAGS_IN_LANGUAGES,
           ProductField.QUANTITY,
         ],
-        version: ProductQueryVersion.v3,
+        version: ProductQueryVersion.latestVersion,
       );
 
       final resultadoProduto = await OpenFoodAPIClient.getProductV3(

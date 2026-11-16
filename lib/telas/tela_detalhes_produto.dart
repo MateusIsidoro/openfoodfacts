@@ -7,12 +7,16 @@ class TelaDetalhesProduto extends StatefulWidget {
   final Product produto;
   final bool ehFavorito;
   final Function(Product) aoAlternarFavorito;
+  final bool estaNoComparador;
+  final Function(Product)? aoAlternarComparador;
 
   const TelaDetalhesProduto({
     super.key,
     required this.produto,
     required this.ehFavorito,
     required this.aoAlternarFavorito,
+    this.estaNoComparador = false,
+    this.aoAlternarComparador,
   });
 
   @override
@@ -21,11 +25,13 @@ class TelaDetalhesProduto extends StatefulWidget {
 
 class _TelaDetalhesProdutoState extends State<TelaDetalhesProduto> {
   late bool _estahFavoritado;
+  late bool _estahNoComparador;
 
   @override
   void initState() {
     super.initState();
     _estahFavoritado = widget.ehFavorito;
+    _estahNoComparador = widget.estaNoComparador;
   }
 
   Widget _criarLinhaNutricional(String titulo, String valor, String unidade, Color cor) {
@@ -96,6 +102,20 @@ class _TelaDetalhesProdutoState extends State<TelaDetalhesProduto> {
       appBar: AppBar(
         title: const Text('Informações do Produto'),
         actions: [
+          if (widget.aoAlternarComparador != null)
+            IconButton(
+              icon: Icon(
+                _estahNoComparador ? Icons.compare_arrows : Icons.add_chart,
+                color: _estahNoComparador ? Colors.amber : null,
+              ),
+              tooltip: _estahNoComparador ? 'Remover da Comparação' : 'Adicionar à Comparação',
+              onPressed: () {
+                setState(() {
+                  _estahNoComparador = !_estahNoComparador;
+                });
+                widget.aoAlternarComparador!(produtoItem);
+              },
+            ),
           IconButton(
             icon: Icon(
               _estahFavoritado ? Icons.favorite : Icons.favorite_border,
