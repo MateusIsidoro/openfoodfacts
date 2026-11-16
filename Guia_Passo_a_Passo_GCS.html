@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<title>Guia Passo a Passo - Gerência de Configuração e DevOps</title>
+<style>
+  @page {
+    size: A4;
+    margin: 18mm 16mm 18mm 16mm;
+  }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    color: #1f2937;
+    line-height: 1.5;
+    font-size: 11pt;
+    margin: 0;
+    padding: 0;
+  }
+  .header {
+    border-bottom: 3px solid #15803d;
+    padding-bottom: 12px;
+    margin-bottom: 20px;
+  }
+  .header h1 {
+    color: #15803d;
+    font-size: 20pt;
+    margin: 0 0 6px 0;
+  }
+  .header .subtitle {
+    color: #4b5563;
+    font-size: 11pt;
+    font-weight: 500;
+  }
+  .meta-box {
+    background-color: #f3f4f6;
+    border-radius: 6px;
+    padding: 10px 14px;
+    margin-bottom: 20px;
+    font-size: 9.5pt;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 24px;
+  }
+  .meta-item strong {
+    color: #111827;
+  }
+  h2 {
+    color: #166534;
+    font-size: 14pt;
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 6px;
+    margin-top: 24px;
+    margin-bottom: 12px;
+    page-break-after: avoid;
+  }
+  h3 {
+    color: #1f2937;
+    font-size: 12pt;
+    margin-top: 16px;
+    margin-bottom: 8px;
+    page-break-after: avoid;
+  }
+  p {
+    margin: 0 0 10px 0;
+  }
+  ol, ul {
+    margin: 0 0 12px 0;
+    padding-left: 22px;
+  }
+  li {
+    margin-bottom: 4px;
+  }
+  code {
+    background-color: #f3f4f6;
+    padding: 2px 5px;
+    border-radius: 4px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 9.5pt;
+    color: #b91c1c;
+  }
+  pre {
+    background-color: #1e293b;
+    color: #f8fafc;
+    padding: 12px 14px;
+    border-radius: 6px;
+    font-family: Consolas, "Courier New", monospace;
+    font-size: 9pt;
+    overflow-x: auto;
+    margin: 8px 0 14px 0;
+    page-break-inside: avoid;
+  }
+  .alert {
+    padding: 10px 14px;
+    border-radius: 6px;
+    margin-bottom: 14px;
+    font-size: 9.5pt;
+  }
+  .alert-warning {
+    background-color: #fef3c7;
+    border-left: 4px solid #f59e0b;
+    color: #92400e;
+  }
+  .alert-info {
+    background-color: #ecfdf5;
+    border-left: 4px solid #10b981;
+    color: #065f46;
+  }
+  .badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 8.5pt;
+    font-weight: 600;
+  }
+  .badge-green { background: #dcfce7; color: #166534; }
+  .badge-blue { background: #dbeafe; color: #1e40af; }
+  .badge-purple { background: #f3e8ff; color: #6b21a8; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 9.5pt;
+  }
+  th, td {
+    border: 1px solid #d1d5db;
+    padding: 8px 10px;
+    text-align: left;
+  }
+  th {
+    background-color: #f9fafb;
+    color: #374151;
+    font-weight: 600;
+  }
+  .page-break {
+    page-break-before: always;
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>NutriBusca — Guia Prático de GCS e DevOps</h1>
+  <div class="subtitle">Roteiro Completo de Implementação e Evidências para a Atividade de Gerência de Configuração</div>
+</div>
+
+<div class="meta-box">
+  <div class="meta-item"><strong>Projeto:</strong> NutriBusca (Open Food Facts Mobile)</div>
+  <div class="meta-item"><strong>Repositório:</strong> https://github.com/MateusIsidoro/openfoodfacts</div>
+  <div class="meta-item"><strong>Responsável:</strong> Mateus Isidoro</div>
+  <div class="meta-item"><strong>Versão do Plano:</strong> v1.2 (16/11/2026)</div>
+</div>
+
+<div class="alert alert-info">
+  <strong>Status da Automação Local:</strong> O projeto local foi 100% atualizado, testado e comitado em cima da branch principal. Contém o <code>PLANO_GCS.md</code> v1.2, a nova funcionalidade do <strong>Comparador Nutricional</strong>, as dependências mais recentes (<code>openfoodfacts ^3.32.0</code>, <code>cupertino_icons ^2.0.0</code>) e o pipeline CI/CD estruturado com environments em <code>.github/workflows/ci_cd.yml</code>.
+</div>
+
+<h2>1. Resumo dos Requisitos Atendidos</h2>
+<table>
+  <thead>
+    <tr>
+      <th>Requisito da Atividade</th>
+      <th>Onde foi implementado / Configurado</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td><strong>Plano de GCS publicado como Item de Configuração</strong></td>
+      <td>Arquivo <code>PLANO_GCS.md</code> v1.2 na raiz do repositório, com histórico e escopo atualizados</td>
+      <td><span class="badge badge-green">Concluído</span></td>
+    </tr>
+    <tr>
+      <td><strong>Nova funcionalidade integrada e testada</strong></td>
+      <td>Aba "Comparar" no app, tela <code>tela_comparador.dart</code> e suíte de testes <code>test/widget_test.dart</code></td>
+      <td><span class="badge badge-green">Concluído</span></td>
+    </tr>
+    <tr>
+      <td><strong>Pipeline CI/CD com Staging e Production</strong></td>
+      <td>Arquivo <code>.github/workflows/ci_cd.yml</code> com jobs de CI, Staging e Produção</td>
+      <td><span class="badge badge-green">Concluído</span></td>
+    </tr>
+    <tr>
+      <td><strong>Proteção de Branch com Bloqueio de Push Direto</strong></td>
+      <td>Configuração de <em>Branch Protection Rules</em> na branch <code>main</code> no GitHub</td>
+      <td><span class="badge badge-blue">Ação Web</span></td>
+    </tr>
+    <tr>
+      <td><strong>Par de Revisão com Acesso de Escrita</strong></td>
+      <td>Configuração de colaborador com permissão <em>Write</em> no repositório</td>
+      <td><span class="badge badge-blue">Ação Web</span></td>
+    </tr>
+    <tr>
+      <td><strong>Revisor Obrigatório para Produção</strong></td>
+      <td>Regra de <em>Required Reviewers</em> no Environment <code>production</code> para Mateus Isidoro</td>
+      <td><span class="badge badge-blue">Ação Web</span></td>
+    </tr>
+  </tbody>
+</table>
+
+<div class="page-break"></div>
+
+<h2>2. Passo a Passo: O que fazer em cada etapa</h2>
+
+<h3>Passo 1: Enviar o Commit Local para o GitHub</h3>
+<p>O repositório local já está com o commit pronto (1 commit à frente de <code>origin/main</code>). No PowerShell, execute:</p>
+<pre>cd c:\Users\Cliente\Downloads\atividade\openfoodfacts-main
+git push origin main</pre>
+<div class="alert alert-warning">
+  <strong>Dica de Autenticação:</strong> Como o GitHub descontinuou o uso de senhas simples para operações Git, se for solicitado login, use a opção <em>Sign in with your browser</em> ou insira o seu <strong>Personal Access Token (PAT)</strong> gerado em <em>GitHub &gt; Settings &gt; Developer Settings &gt; Personal access tokens</em>.
+</div>
+
+<h3>Passo 2: Configurar o Par de Revisão com Acesso de Escrita</h3>
+<ol>
+  <li>Abra o repositório no navegador: <code>https://github.com/MateusIsidoro/openfoodfacts</code></li>
+  <li>Clique na aba superior <strong>Settings</strong>.</li>
+  <li>No menu lateral esquerdo, na seção <em>Access</em>, clique em <strong>Collaborators</strong>.</li>
+  <li>Clique no botão verde <strong>Add people</strong>.</li>
+  <li>Pesquise pelo nome de usuário ou e-mail do seu colega/dupla de trabalho.</li>
+  <li>Defina a função/permissão como <strong>Write (Escrita)</strong>.</li>
+  <li>Clique em <strong>Add to this repository</strong>. O colega receberá o convite para aceitar.</li>
+</ol>
+
+<h3>Passo 3: Configurar a Proteção da Branch <code>main</code></h3>
+<ol>
+  <li>Ainda em <strong>Settings</strong>, no menu lateral esquerdo, clique em <strong>Branches</strong>.</li>
+  <li>Clique em <strong>Add branch protection rule</strong> (ou <strong>Add rule</strong>).</li>
+  <li>No campo <strong>Branch name pattern</strong>, digite: <code>main</code></li>
+  <li>Marque as seguintes opções essenciais:
+    <ul>
+      <li>☑️ <strong>Require a pull request before merging</strong></li>
+      <li>☑️ <strong>Require approvals</strong> e deixe o valor em <strong>1</strong> (exige a revisão do par de escrita).</li>
+      <li>☑️ <strong>Dismiss stale pull request approvals when new commits are pushed</strong>.</li>
+      <li>☑️ <strong>Require status checks to pass before merging</strong> (marque o check <code>ci</code> do pipeline).</li>
+      <li>☑️ <strong>Do not allow bypassing the above settings</strong> (impede que qualquer usuário, inclusive o administrador, faça push direto).</li>
+    </ul>
+  </li>
+  <li>Role até o final da página e clique em <strong>Save changes</strong>.</li>
+</ol>
+
+<h3>Passo 4: Gerar e Capturar a Evidência de Recusa do Push Direto</h3>
+<p>Com a regra de proteção salva, comprove no terminal que o push direto é recusado:</p>
+<ol>
+  <li>No terminal do projeto, crie uma alteração de teste simples:
+<pre>"teste de bloqueio" >> test_recusa.txt
+git add test_recusa.txt
+git commit -m "teste: tentativa de push direto sem PR"</pre>
+  </li>
+  <li>Tente enviar o commit diretamente para a branch principal:
+<pre>git push origin main</pre>
+  </li>
+  <li>O GitHub recusará a operação e exibirá no terminal a evidência formal:
+<pre>To https://github.com/MateusIsidoro/openfoodfacts.git
+ ! [remote rejected] main -> main (protected branch hook declined)
+remote: error: GH006: Protected branch update failed for refs/heads/main.
+remote: error: Changes must be made through a pull request.
+remote: error: 1 review approving this pull request is required before merging.
+error: failed to push some refs to 'https://github.com/MateusIsidoro/openfoodfacts.git'</pre>
+  </li>
+  <li><strong>📸 Registro de Evidência:</strong> Tire um print desta tela do terminal com a mensagem de erro acima. Ela é a prova obrigatória de que a política de GCS está ativa e funcional.</li>
+  <li>Desfaça o commit de teste para limpar o histórico local:
+<pre>git reset --hard HEAD~1</pre>
+  </li>
+</ol>
+
+<div class="page-break"></div>
+
+<h3>Passo 5: Configurar os Environments <code>staging</code> e <code>production</code></h3>
+<ol>
+  <li>No GitHub, acesse a aba <strong>Settings</strong> do repositório.</li>
+  <li>No menu lateral esquerdo (sob <em>Code and automation</em>), clique em <strong>Environments</strong>.</li>
+  <li>Clique no botão <strong>New environment</strong>.</li>
+</ol>
+
+<h4>5.1 Criando o ambiente <code>staging</code>:</h4>
+<ol>
+  <li>Digite o nome: <code>staging</code> e clique em <strong>Configure environment</strong>.</li>
+  <li>O ambiente de homologação não exige revisores prévios, permitindo deploy automatizado pós-merge.</li>
+  <li>Clique em <strong>Save environment</strong>.</li>
+</ol>
+
+<h4>5.2 Criando o ambiente <code>production</code> com Revisor Obrigatório:</h4>
+<ol>
+  <li>Volte em <strong>Environments</strong> e clique em <strong>New environment</strong>.</li>
+  <li>Digite o nome: <code>production</code> e clique em <strong>Configure environment</strong>.</li>
+  <li>Na seção <strong>Deployment protection rules</strong>, marque:
+    <ul>
+      <li>☑️ <strong>Required reviewers</strong></li>
+    </ul>
+  </li>
+  <li>No campo de busca de revisores que surgir, pesquise e selecione o seu usuário: <strong>MateusIsidoro</strong>.</li>
+  <li>Certifique-se de que a opção <em>Prevent self-review</em> esteja desmarcada para que você possa aprovar as suas próprias promoções de versão.</li>
+  <li>Clique em <strong>Save protection rules</strong>.</li>
+</ol>
+
+<hr style="border: 0; border-top: 1px solid #e5e7eb; margin: 20px 0;">
+
+<h2>3. Fluxo de Trabalho Integrado (Como apresentar e testar)</h2>
+<p>Após as configurações acima, o fluxo contínuo de trabalho e auditoria funciona da seguinte forma:</p>
+<ol>
+  <li><strong>Criação da Branch de Mudança:</strong>
+    <br><code>git checkout -b feature/melhoria-nutricional</code>
+  </li>
+  <li><strong>Envio e Abertura de PR:</strong>
+    <br><code>git push -u origin feature/melhoria-nutricional</code>
+    <br>Abra o Pull Request no GitHub apontando para a <code>main</code>.
+  </li>
+  <li><strong>Execução da CI:</strong>
+    <br>O GitHub Actions executa o job <code>ci</code> (verificando formatação, <code>flutter analyze</code> e <code>flutter test</code>).
+  </li>
+  <li><strong>Revisão por Par com Acesso de Escrita:</strong>
+    <br>Seu colega convidado acessa o PR, revisa as alterações no código e clica em <strong>Review changes &gt; Approve</strong>.
+  </li>
+  <li><strong>Merge na Main:</strong>
+    <br>Com o CI verde e a aprovação do par, o botão de merge é liberado.
+  </li>
+  <li><strong>Deploy em Staging e Gate de Produção:</strong>
+    <br>O pipeline inicia automaticamente o deploy no ambiente <code>staging</code>.
+    <br>Ao concluir Staging, o pipeline fica em espera no ambiente <code>production</code> com a indicação <em>Waiting for review</em>.
+    <br>Você (Mateus Isidoro) clica no botão <strong>Review deployments</strong>, marca <strong>production</strong> e clica em <strong>Approve and deploy</strong> para concluir a entrega final.
+  </li>
+</ol>
+
+</body>
+</html>
